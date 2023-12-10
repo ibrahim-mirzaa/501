@@ -1,0 +1,48 @@
+from rmp import dict_gn
+
+start, end = "Arad", "Bucharest"
+result = " "
+
+
+def DLS(city, visited_stack, start_limit, end_limit):
+    global result
+    result += city + " "
+    visited_stack.append(city)
+
+    if city == end:
+        return 1
+
+    if start_limit == end_limit:
+        return 0
+
+    for each_city in dict_gn[city]:
+        if each_city not in visited_stack:
+            if DLS(each_city, visited_stack, start_limit + 1, end_limit):
+                return 1
+
+    return 0
+
+
+def IDDFS(city, visited_stack, end_limit):
+    global result
+    for i in range(end_limit):
+        print("searching at lim:", i)
+        if DLS(city, visited_stack, 0, i):
+            print("found")
+            break
+        else:
+            print("not found")
+            print(result)
+            result = ""
+            visited_stack = []
+
+
+def main():
+    visited_stack = []
+    IDDFS(start, visited_stack, 9)
+    print("IDDFS traversal from", start, "to", end, "is:")
+    print(result)
+
+
+if __name__ == "__main__":
+    main()

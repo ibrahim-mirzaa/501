@@ -1,0 +1,184 @@
+day,outlook,temp,humidity,wind,play
+D1,Sunny,Hot,High,Weak,No
+D2,Sunny,Hot,High,Strong,No
+D3,Overcast,Hot,High,Weak,Yes
+D4,Rain,Mild,High,Weak,Yes
+D5,Rain,Cool,Normal,Weak,Yes
+D6,Rain,Cool,Normal,Strong,No
+D7,Overcast,Cool,Normal,Strong,Yes
+D8,Sunny,Mild,High,Weak,No
+D9,Sunny,Cool,Normal,Weak,Yes
+D10,Rain,Mild,Normal,Weak,Yes
+D11,Sunny,Mild,Normal,Strong,Yes
+D12,Overcast,Mild,High,Strong,Yes
+D13,Overcast,Hot,Normal,Weak,Yes
+D14,Rain,Mild,High,Strong,No
+"D15         import numpy as np
+import pandas as pd
+
+df = pd.read_csv(""C:\\Users\\Admin\\Downloads\\archive (1)\\play_tennis.csv"")
+
+df
+
+df.describe
+
+df.shape
+
+
+df= df.drop(['day'],axis=1)
+
+df
+
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+
+df['outlook'] = le.fit_transform(df['outlook'])
+df['temp'] = le.fit_transform(df['temp'])
+df['humidity'] = le.fit_transform(df['humidity'])
+df['wind'] = le.fit_transform(df['wind'])
+df['play'] = le.fit_transform(df['play'])
+
+df
+
+y = df['play']
+x = df.drop(['play'],axis=1)
+
+from sklearn import tree
+clf = tree.DecisionTreeClassifier(criterion='entropy')
+clf = clf.fit(x, y)
+
+tree.plot_tree(clf)","Rain            import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn import svm
+from sklearn.svm import SVC,LinearSVC
+from sklearn.metrics import confusion_matrix,accuracy_score,classification_report
+
+pd.set_option('display.max_rows',1000)
+pd.set_option('display.max_columns',1000)
+pd.set_option('display.width',1000)
+
+data = pd.read_csv('D:\\My things\\TYCS\\Study material\\diabetes.csv')
+
+data.shape
+
+data.head()
+
+data.describe()
+
+x = data.drop('Outcome',axis=1)
+y = data['Outcome']
+
+
+x_train = x.iloc[:600]
+x_test = x.iloc[600:]
+y_train = y[:600]
+y_test = y[600:]
+
+print(""x_train shape:"",x_train.shape)
+print(""x_test shape:"",x_test.shape)
+print(""y_train shape:"",y_train.shape)
+print(""x_test shape:"",y_test.shape)
+
+
+support_vector_classifier = SVC(kernel=""linear"").fit(x_train,y_train)
+
+support_vector_classifier
+
+support_vector_classifier.C
+
+y_pred = support_vector_classifier.predict(x_test)
+
+cm = confusion_matrix(y_test,y_pred)
+
+cm
+
+accuracy_score(y_test,y_pred)
+
+print(classification_report(y_test,y_pred))
+
+","Mild           import numpy as np
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, roc_curve, roc_auc_score
+import matplotlib.pyplot as plt
+plt.style.use(""ggplot"")
+
+pd.set_option('display.max_rows',1000)
+pd.set_option('display.max_columns',1000)
+pd.set_option('display.width',1000)
+
+data = pd.read_csv('D:\\My things\\TYCS\\Study material\\diabetes.csv')
+
+data.shape
+
+data.head()
+
+data.describe()
+
+data.dtypes
+
+x = data.drop('Outcome',axis=1)
+y = data['Outcome']
+
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.4,random_state=42)
+
+
+neighbors = np.arange(1,9)
+train_accuracy = np.empty(len(neighbors))
+test_accuracy = np.empty(len(neighbors))
+
+for i,k in enumerate(neighbors):
+    knn=KNeighborsClassifier(n_neighbors=k)
+    knn.fit(x_train,y_train)
+    train_accuracy[i]=knn.score(x_train,y_train)
+    test_accuracy[i]=knn.score(x_test,y_test)
+
+plt.title(""k-NN varying number of neighbors"")
+plt.plot(neighbors, test_accuracy, label=""Testing Accuracy"")
+plt.plot(neighbors, train_accuracy, label=""Trainining Accuracy"")
+plt.legend()
+plt.xlabel(""Number of neighbors"")
+plt.ylabel(""Accuracy"")
+plt.show()
+
+knn =KNeighborsClassifier(n_neighbors=7)
+
+knn.fit(x_test,y_test)
+
+y_pred = knn.predict(x_test)
+
+confusion_matrix(y_test, y_pred)
+
+print(classification_report(y_test, y_pred))
+","Normal        from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+
+iris = load_iris()
+X = iris.data
+y = iris.target
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+clf =GaussianNB()
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
+print(""Accuracy: "", accuracy_score(y_test, y_pred))","Strong          import pandas
+from sklearn import model_selection
+from sklearn.ensemble import AdaBoostClassifier
+
+url = ""https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv""
+names = ['preg', 'plas', 'pres', 'skin', 'test', 'mass', 'pedi', 'age', 'class']
+dataframe = pandas.read_csv(url, names=names)
+
+array = dataframe.values
+X = array[:,0:8]
+Y = array[:,8]
+seed = 7
+num_trees = 30
+model = AdaBoostClassifier(n_estimators=num_trees, random_state=seed)
+results = model_selection.cross_val_score(model, X, Y)
+print(results.mean()) ",Yes

@@ -1,0 +1,36 @@
+from queue import Queue
+from rmp import dict_gn
+
+start = 'Arad'
+goal = 'Bucharest'
+
+
+def bfs(start, goal, graph):
+    result = []
+    city_queue = Queue()
+    visited_set = set()
+
+    city_queue.put(start)
+    visited_set.add(start)
+
+    while not city_queue.empty():
+        current_city = city_queue.get()
+        result.append(current_city)
+
+        if current_city == goal:
+            break
+
+        for neighbor, cost in graph[current_city].items():
+            if neighbor not in visited_set:
+                city_queue.put(neighbor)
+                visited_set.add(neighbor)
+
+    return result
+
+
+def main():
+    traversal_result = bfs(start, goal, dict_gn)
+    print("BFS Traversal from", start, "to", goal, "is:", traversal_result)
+
+
+main()

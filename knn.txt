@@ -1,0 +1,57 @@
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, roc_curve, roc_auc_score
+import matplotlib.pyplot as plt
+plt.style.use("ggplot")
+
+pd.set_option('display.max_rows',1000)
+pd.set_option('display.max_columns',1000)
+pd.set_option('display.width',1000)
+
+data = pd.read_csv('D:\\My things\\TYCS\\Study material\\diabetes.csv')
+
+data.shape
+
+data.head()
+
+data.describe()
+
+data.dtypes
+
+x = data.drop('Outcome',axis=1)
+y = data['Outcome']
+
+x_train,x_test,y_train,y_test = train_test_split(x,y,test_size=0.4,random_state=42)
+
+
+neighbors = np.arange(1,9)
+train_accuracy = np.empty(len(neighbors))
+test_accuracy = np.empty(len(neighbors))
+
+for i,k in enumerate(neighbors):
+    knn=KNeighborsClassifier(n_neighbors=k)
+    knn.fit(x_train,y_train)
+    train_accuracy[i]=knn.score(x_train,y_train)
+    test_accuracy[i]=knn.score(x_test,y_test)
+
+plt.title("k-NN varying number of neighbors")
+plt.plot(neighbors, test_accuracy, label="Testing Accuracy")
+plt.plot(neighbors, train_accuracy, label="Trainining Accuracy")
+plt.legend()
+plt.xlabel("Number of neighbors")
+plt.ylabel("Accuracy")
+plt.show()
+
+knn =KNeighborsClassifier(n_neighbors=7)
+
+knn.fit(x_test,y_test)
+
+y_pred = knn.predict(x_test)
+
+confusion_matrix(y_test, y_pred)
+
+print(classification_report(y_test, y_pred))
+

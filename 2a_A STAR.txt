@@ -1,0 +1,38 @@
+from queue import PriorityQueue
+from rmp import dict_gn, dict_hn
+
+start, goal, result = 'Arad', 'Bucharest', ''
+
+
+def calculate_fn(city_str):
+    cities = city_str.split(",")
+    hn, gn = 0, 0
+    for ctr in range(len(cities) - 1):
+        gn += dict_gn[cities[ctr]][cities[ctr + 1]]
+    hn = dict_hn[cities[-1]]
+    return hn + gn
+
+
+def explore(city_queue):
+    global result
+    total_cost, city_str, this_city = city_queue.get()
+    if this_city == goal:
+        result = f"{city_str}::{total_cost}"
+        return
+    for neighbor in dict_gn[this_city]:
+        city_queue.put(
+            (calculate_fn(f"{city_str},{neighbor}"), f"{city_str},{neighbor}", neighbor))
+    explore(city_queue)
+
+
+def main():
+    city_queue = PriorityQueue()
+    this_city = start
+    city_queue.put((calculate_fn(start), start, this_city))
+    explore(city_queue)
+    print("The A* path with the total cost is:")
+    print(result)
+
+
+if __name__ == "__main__":
+    main()

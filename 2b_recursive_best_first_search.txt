@@ -1,0 +1,61 @@
+import queue as Q
+from rmp import dict_gn
+from rmp import dict_hn
+
+start_city = "Arad"
+goal_city = "Bucharest"
+result = ""
+
+
+def calculate_fn(city_sequence):
+    cities = city_sequence.split(",")
+    gn = sum(dict_gn[cities[i]][cities[i + 1]] for i in range(len(cities) - 1))
+    hn = dict_hn[cities[-1]]
+    return hn + gn
+
+
+def print_queue(city_queue):
+    for item in city_queue.queue:
+        print(item)
+
+
+def expand_city(city_queue):
+    global result
+    total_cost, city_sequence, current_city = city_queue.get()
+    next_total_cost, _, _ = city_queue.queue[0] if not city_queue.empty() else (
+        999, "NA", "NA")
+
+    if current_city == goal_city and total_cost < next_total_cost:
+        result = city_sequence + "::" + str(total_cost)
+        return
+
+    print("Expanded city ---------", current_city)
+    print("Second best f(n) ------", next_total_cost)
+
+    temp_queue = Q.PriorityQueue()
+    for neighbor_city in dict_gn[current_city]:
+        temp_queue.put((calculate_fn(city_sequence + ',' + neighbor_city),
+                       city_sequence + ',' + neighbor_city, neighbor_city))
+
+    for _ in range(1, 3):
+        ctr_total, ctr_sequence, ctr_city = temp_queue.get()
+        if ctr_total < next_total_cost:
+            city_queue.put((ctr_total, ctr_sequence, ctr_city))
+        else:
+            city_queue.put((ctr_total, city_sequence, current_city))
+            break
+
+    print_queue(city_queue)
+    expand_city(city_queue)
+
+
+def main():
+    city_queue = Q.PriorityQueue()
+    current_city = start_city
+    city_queue.put((999, "NA", "NA"))
+    city_queue.put((calculate_fn(start_city), start_city, current_city))
+    expand_city(city_queue)
+    print(result)
+
+
+main()
